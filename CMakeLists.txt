@@ -3,4 +3,4 @@ project(ProjetoAED)
 
 set(CMAKE_CXX_STANDARD 14)
 
-add_executable(ProjetoAED main.cpp)
+add_executable(ProjetoAED main.cpp minHeap.h graph.h graph.cpp)
