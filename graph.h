@@ -37,7 +37,7 @@ public:
     Graph(int nodes, bool dir = false);
 
     // Add edge from source to destination with a certain weight
-    void addEdge(int src, int dest, int weight = 1);
+    void addEdge(int src, int dest, int weight = 1, string line = "");
 
     // ----- Functions to implement in this class -----
     int dijkstra_distance(int a, int b);

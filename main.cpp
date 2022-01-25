@@ -2,7 +2,9 @@
 #include <fstream>
 #include <vector>
 #include <map>
+#include <cmath>
 #include "graph.h"
+
 
 using namespace std;
 
@@ -11,7 +13,7 @@ using namespace std;
 
 
 
-map<string, int> readStops() {
+map<string, int> mapStops() {
     //Read nodes from files and print them on the console to test
 
     map<string, int> stopsMap;
@@ -29,7 +31,8 @@ map<string, int> readStops() {
         getline(stops, zone, ',');
         getline(stops, latitude, ',');
         getline(stops, longitude, '\n');
-        //cout << code << "  -  " << name << "  -  " << zone << "  -  " << latitude << "  -  " << longitude << endl;
+        //
+        // cout << code << "  -  " << name << "  -  " << zone << "  -  " << latitude << "  -  " << longitude << endl;
         stopsMap.insert(pair<string, int>(code, count));
         count++;
     }
@@ -37,6 +40,40 @@ map<string, int> readStops() {
     cout << count;
 
     return stopsMap;
+}
+
+vector<tuple<string,string,string,float,float>> readStopsInfo() {
+    //Read nodes from files and print them on the console to test
+
+    vector<tuple<string,string,string,float,float>> stopsInfo;
+
+    string code, name, zone;
+    string latitude, longitude;
+    int count = 0;
+
+    ifstream stops;
+    stops.open("..\\.\\dataset\\stops.csv");
+    stops.ignore(1000, '\n');
+
+    while (getline(stops, code, ',')) {
+        getline(stops, name, ',');
+        getline(stops, zone, ',');
+        getline(stops, latitude, ',');
+        getline(stops, longitude, '\n');
+        float lat = stof(latitude);
+        float longi = stof(longitude);
+        //
+        // cout << code << "  -  " << name << "  -  " << zone << "  -  " << latitude << "  -  " << longitude << endl;
+        tuple<string,string,string,float,float> stopInfo;
+        stopInfo = make_tuple(code, name, zone, lat, longi);
+
+        stopsInfo.push_back(stopInfo);
+        count++;
+    }
+
+    cout << count;
+
+    return stopsInfo;
 }
 
 
@@ -116,33 +153,44 @@ Graph toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map<strin
         vector<string> rev = currentline.second;
 
         //parse the normal direction
-        cout << "Parsing normal direction" << endl << endl;
+        //cout << "Parsing normal direction" << endl << endl;
 
         for ( auto et = norm.begin(); et != norm.end(); et++) {
             int origin = stops[*et];
-            int dest = stops[*(et+1)];
+            if((et+1)!=norm.end()) {
+                int dest = stops[*(et+1)];
+                //cout << " " << origin << " " << dest << endl;
 
-            cout << " " << origin << " " << dest << endl;
+                //add node to graph
+                g.addEdge(origin,dest);
+            }
+            else {
+                break;
+            }
 
-            //add node to graph
-            g.addEdge(origin,dest);
+
+
         }
 
-        cout << endl << endl;
-
+        cout << endl;
 
         //parse the reverse direction
-        cout << "Parsing reverse direction" << endl << endl;
+        //cout << "Parsing reverse direction" << endl << endl;
 
         for ( auto jt = rev.begin(); jt != rev.end(); jt++) {
             int origin = stops[*jt];
-            int dest = stops[*(jt+1)];
+            if((jt+1)!=rev.end()) {
+                int dest = stops[*(jt+1)];
+                //cout << " " << origin << " " << dest << endl;
 
-            //cout << " " << origin << " " << dest << endl;
-
-            //add node to graph
-            g.addEdge(origin,dest);
+                //add node to graph
+                g.addEdge(origin,dest);
+            }
+            else {
+                break;
+            }
         }
+
 
     }
 
@@ -150,15 +198,65 @@ Graph toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map<strin
 }
 
 
+static double haversine(double lat1, double lon1,
+                        double lat2, double lon2)
+{
+    // distance between latitudes
+    // and longitudes
+    double dLat = (lat2 - lat1) *
+                  M_PI / 180.0;
+    double dLon = (lon2 - lon1) *
+                  M_PI / 180.0;
+
+    // convert to radians
+    lat1 = (lat1) * M_PI / 180.0;
+    lat2 = (lat2) * M_PI / 180.0;
+
+    // apply formulae
+    double a = pow(sin(dLat / 2), 2) +
+               pow(sin(dLon / 2), 2) *
+               cos(lat1) * cos(lat2);
+    double rad = 6371;
+    double c = 2 * asin(sqrt(a));
+    return rad * c;
+}
+
+
+
+
+
 int main() {
 
-    map<string, int> stops = readStops();
+    map<string, int> stops = mapStops();
+
+    vector<tuple<string,string,string,float,float>> stopsInfo = readStopsInfo();
 
     vector<pair<string, string>> linesInfo = readLinesInfo();
 
     vector<pair<vector<string>, vector<string>>> linesStops = readLines(linesInfo);
 
     Graph graph = toGraph(linesStops, stops);
+
+    double haversinetest = haversine(41.14066938,-8.615876577,41.14383841,-8.621984753);
+
+
+
+
+
+
+
+    //Testing
+
+    list<int> test1 = graph.dijkstra_path(1175,1595);  //linha 1 na direção normal
+
+    list<int> test2 = graph.dijkstra_path(1566,1580);  //OLVR1 - PAL2
+
+    cout << endl;
+    for (auto i:test2) {
+        cout << "----->" << get<1>(stopsInfo[i]) ;
+    }
+
+    cout << haversinetest;
 
 
 
