@@ -187,14 +187,11 @@ Graph toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map<strin
                 double dist = haversine(get<3>(info1), get<4>(info1), get<3>(info2), get<4>(info2));
                 //cout << " " << origin << " " << dest << endl;
                 //add node to graph
-                g.addEdge(origin,dest);
+                g.addEdge(origin,dest, dist);
             }
             else {
                 break;
             }
-
-
-
         }
 
         cout << endl;
@@ -206,17 +203,19 @@ Graph toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map<strin
             int origin = stops[*jt];
             if((jt+1)!=rev.end()) {
                 int dest = stops[*(jt+1)];
+                tuple<string,string,string,double,double> info1 = stopsInfo[stops[*jt]];
+                tuple<string,string,string,double,double> info2 = stopsInfo[stops[*(jt+1)]];
+                double lat1 = get<3>(info1);
+                double lon1 = get<4>(info1);
+                double dist = haversine(get<3>(info1), get<4>(info1), get<3>(info2), get<4>(info2));
                 //cout << " " << origin << " " << dest << endl;
-
                 //add node to graph
-                g.addEdge(origin,dest);
+                g.addEdge(origin,dest, dist);
             }
             else {
                 break;
             }
         }
-
-
     }
 
    return g;
@@ -251,18 +250,24 @@ int main() {
 
     //Testing
 
-    list<int> test1 = graph.dijkstra_path(1175,1595);  //linha 1 na direção normal
+    /*list<int> test1 = graph.dijkstra_path(1175,1595);  //linha 1 na direção normal
 
-    list<int> test2 = graph.dijkstra_path(1566,1580);  //OLVR1 - PAL2
+    double test2 = graph.dijkstra_distance(1175,1595);*/
+
+    list<int> test1 = graph.dijkstra_path(1597,1175);  //linha 1 na direção reverse
+
+    double test2 = graph.dijkstra_distance(1597,1175);
+
+    /*list<int> test1 = graph.dijkstra_path(1894,384);  //linha 1 na direção normal
+    double test2 = graph.dijkstra_distance(1894,384);*/
 
     cout << endl;
     for (auto i:test1) {
         cout << "----->" << get<1>(stopsInfo[i]) ;
     }
 
-    double haversinetest = haversine(41.14066938,-8.615876577,41.14383841,-8.621984753);
+    cout << endl << test2;
 
-    cout << haversinetest;
 
 
 

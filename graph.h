@@ -14,13 +14,13 @@ using namespace std;
 class Graph {
     struct Edge {
         int dest;   // Destination node
-        float weight; // An integer weight
+        double weight; // An integer weight
         string line; //
     };
 
     struct Node {
         list<Edge> adj; // The list of outgoing edges (to adjacent nodes)
-        int dist;
+        double dist;
         int pred;
         bool visited;
         string name;
@@ -37,10 +37,10 @@ public:
     Graph(int nodes, bool dir = false);
 
     // Add edge from source to destination with a certain weight
-    void addEdge(int src, int dest, float weight = 1, string line = "");
+    void addEdge(int src, int dest, double weight, string line = "");
 
     // ----- Functions to implement in this class -----
-    int dijkstra_distance(int a, int b);
+    double dijkstra_distance(int a, int b);
     list<int> dijkstra_path(int a, int b);
 };
 

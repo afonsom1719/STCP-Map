@@ -11,7 +11,7 @@ Graph::Graph(int num, bool dir) : n(num), hasDir(dir), nodes(num+1) {
 }
 
 // Add edge from source to destination with a certain weight
-void Graph::addEdge(int src, int dest, float weight, string line) {
+void Graph::addEdge(int src, int dest, double weight, string line) {
     if (src<1 || src>n || dest<1 || dest>n) return;
     nodes[src].adj.push_back({dest, weight, line});
     if (!hasDir) nodes[dest].adj.push_back({src, weight, line});
@@ -25,9 +25,10 @@ void Graph::addEdge(int src, int dest, float weight, string line) {
 // ..............................
 // a) Distância entre dois nós
 // TODO
-int Graph::dijkstra_distance(int a, int b) {
+double Graph::dijkstra_distance(int a, int b) {
     dijkstra(a);
     if (nodes[b].dist == INF) return -1;
+    double test = nodes[b].dist;
     return nodes[b].dist;
 }
 
@@ -48,7 +49,7 @@ list<int> Graph::dijkstra_path(int a, int b) {
 }
 
 void Graph::dijkstra(int s) {
-    MinHeap<int, int> q(n, -1);
+    MinHeap<int, double> q(n, -1);
     for (int v=1; v<=n; v++) {
         nodes[v].dist = INF;
         q.insert(v, INF);
@@ -59,11 +60,11 @@ void Graph::dijkstra(int s) {
     nodes[s].pred = s;
     while (q.getSize()>0) {
         int u = q.removeMin();
-        // cout << "Node " << u << " with dist = " << nodes[u].dist << endl;
+        //cout << "Node " << u << " with dist = " << nodes[u].dist << endl;
         nodes[u].visited = true;
         for (auto e : nodes[u].adj) {
-            int v = e.dest;
-            int w = e.weight;
+            double v = e.dest;
+            double w = e.weight;
             if (!nodes[v].visited && nodes[u].dist + w < nodes[v].dist) {
                 nodes[v].dist = nodes[u].dist + w;
                 q.decreaseKey(v, nodes[v].dist);
