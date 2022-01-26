@@ -163,15 +163,18 @@ vector<pair<vector<string>, vector<string>>> readLines(vector<pair<string, strin
 }
 
 
-Graph toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map<string, int> stops, vector<tuple<string,string,string,double,double>> stopsInfo) {
+Graph toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map<string, int> stops, vector<tuple<string,string,string,double,double>> stopsInfo, vector<pair<string, string>> linesInfo) {
     Graph g(2487, true);
+    int counter = 0;
 
     for (auto it = linesStops.begin(); it != linesStops.end(); it++) {
 
-        pair<vector<string>, vector<string>> currentline = (*it);
+        pair<vector<string>, vector<string>> currentLine = (*it);
 
-        vector<string> norm = currentline.first;
-        vector<string> rev = currentline.second;
+
+
+        vector<string> norm = currentLine.first;
+        vector<string> rev = currentLine.second;
 
         //parse the normal direction
         //cout << "Parsing normal direction" << endl << endl;
@@ -187,7 +190,8 @@ Graph toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map<strin
                 double dist = haversine(get<3>(info1), get<4>(info1), get<3>(info2), get<4>(info2));
                 //cout << " " << origin << " " << dest << endl;
                 //add node to graph
-                g.addEdge(origin,dest, dist);
+                g.addEdge(origin,dest, dist, linesInfo[counter].first);
+
             }
             else {
                 break;
@@ -210,12 +214,13 @@ Graph toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map<strin
                 double dist = haversine(get<3>(info1), get<4>(info1), get<3>(info2), get<4>(info2));
                 //cout << " " << origin << " " << dest << endl;
                 //add node to graph
-                g.addEdge(origin,dest, dist);
+                g.addEdge(origin,dest, dist, linesInfo[counter].first);
             }
             else {
                 break;
             }
         }
+        counter++;
     }
 
    return g;
@@ -238,7 +243,7 @@ int main() {
 
     vector<pair<vector<string>, vector<string>>> linesStops = readLines(linesInfo);
 
-    Graph graph = toGraph(linesStops, stops, stopsInfo);
+    Graph graph = toGraph(linesStops, stops, stopsInfo, linesInfo);
 
 
 
@@ -255,6 +260,7 @@ int main() {
     double test2 = graph.dijkstra_distance(1175,1595);*/
 
     list<int> test1 = graph.dijkstra_path(1597,1175);  //linha 1 na direção reverse
+    
 
     double test2 = graph.dijkstra_distance(1597,1175);
 
