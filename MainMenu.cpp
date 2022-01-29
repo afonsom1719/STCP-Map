@@ -171,15 +171,23 @@ void MainMenu::menorDistancia(pair<string,string> jef) {
 
     list <string> lines;
     list <string> path = stcp.doDijkstra(jef.first, jef.second, lines);
+    auto lineIt = lines.begin();
 
 
     TextTable t( '-', '|', '+' );
+    t.add("Paragens");
+    t.add("Linhas/Andar");
+    t.add(" ");
     t.add(" ");
     t.endOfRow();
 
     for (auto i:path) {
         t.add(i);
+        t.add(*lineIt);
         t.endOfRow();
+        if (lineIt != prev(lines.end())){
+            lineIt = next(lineIt);
+        }
     }
 
     cout << t;

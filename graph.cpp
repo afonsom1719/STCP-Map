@@ -45,11 +45,11 @@ list<int> Graph::dijkstra_path(int a, int b, list<string>& linhas) {
     int v = b;
     while (v != a) {
         int currentNode = v;
-        list<Edge> lines;
+        v = nodes[v].pred;
+        list<Edge> lines = {};
         for (auto it = nodes[v].adj.begin(); it != nodes[v].adj.end(); it++) {
             lines.push_back(*it);
         }
-        v = nodes[v].pred;
 
         double shortestDistance = INT_MAX;
         string line;
