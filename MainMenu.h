@@ -7,6 +7,7 @@
 
 #include<iostream>
 #include <fstream>
+#include <cstdlib>
 #include <vector>
 #include <map>
 #include <cmath>
@@ -26,13 +27,13 @@ public:
 
     void menu();
 
-    pair<int,int> enterLocation();
+    void pathPreference(pair<string,string> paragens);
 
     pair<string, string> enterParagens();
 
     pair<double,double> enterBeginningCoordinates();
 
-    void mostrarNearbyParagens();
+    pair<string,string> mostrarNearbyParagens(pair<double,double> initialCoords);
 
     void menorDistancia(pair<string,string> jef);
 
