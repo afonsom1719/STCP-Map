@@ -177,6 +177,7 @@ void MainMenu::menorDistancia(pair<string,string> jef) {
     TextTable t( '-', '|', '+' );
     t.add("Paragens");
     t.add("Linhas/Caminhar");
+    t.endOfRow();
     t.add(" ");
     t.add(" ");
     t.endOfRow();
@@ -190,16 +191,8 @@ void MainMenu::menorDistancia(pair<string,string> jef) {
         }
     }
 
-    cout << t;
-
-    cout << "\n\n\n";
-    for (auto i:lines) {
-        cout << " " << i;
-    }
-
     string aaa;
     cin >> aaa;
-
 }
 
 
