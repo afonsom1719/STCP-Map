@@ -176,7 +176,7 @@ void MainMenu::menorDistancia(pair<string,string> jef) {
 
     TextTable t( '-', '|', '+' );
     t.add("Paragens");
-    t.add("Linhas/Andar");
+    t.add("Linhas/Caminhar");
     t.add(" ");
     t.add(" ");
     t.endOfRow();
