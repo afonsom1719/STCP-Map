@@ -8,6 +8,8 @@
 #include <vector>
 #include <list>
 #include <iostream>
+#include <queue>
+
 
 using namespace std;
 
@@ -23,7 +25,6 @@ class Graph {
         double dist;
         int pred;
         bool visited;
-        string name;
     };
 
     int n;              // Graph size (vertices are numbered from 1 to n)
@@ -32,16 +33,27 @@ class Graph {
 
     void dijkstra(int s);
 
+
 public:
     // Constructor: nr nodes and direction (default: undirected)
     Graph(int nodes, bool dir = false);
 
     // Add edge from source to destination with a certain weight
-    void addEdge(int src, int dest, double weight, string line = "");
+    void addEdge(int src, int dest, double weight = 1, string line = "");
 
     // ----- Functions to implement in this class -----
     double dijkstra_distance(int a, int b);
     list<int> dijkstra_path(int a, int b);
+
+
+    void BFS(int a, int b);
+    list<int> BFS_path(int a , int b);
+
+    vector<Node> getNodes() {
+        return nodes;
+    }
+
+
 };
 
 #endif
