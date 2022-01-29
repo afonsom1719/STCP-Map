@@ -43,7 +43,7 @@ public:
 
     // ----- Functions to implement in this class -----
     double dijkstra_distance(int a, int b);
-    list<int> dijkstra_path(int a, int b);
+    list<int> dijkstra_path(int a, int b, list<string>& linhas);
 
 
     void BFS(int a, int b);

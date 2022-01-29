@@ -39,6 +39,7 @@ STCP::STCP() {
     Graph g = toGraph(linesStops, stopsMap, stopsInfo, linesInfo);
     this->graph = g;
     graph = addWalkEdges(graph, stopsInfo);
+
 }
 
 
@@ -238,7 +239,7 @@ Graph STCP::addWalkEdges(Graph g, vector<tuple<string,string,string,double,doubl
             tuple<string,string,string,double,double> stop1 = stopsInfo[i];
             tuple<string,string,string,double,double> stop2 = stopsInfo[j];
             double dist = haversine(get<3>(stop1), get<4>(stop1), get<3>(stop2), get<4>(stop2));
-            if (dist < 0.2) {
+            if (dist < 0.1) {
                 update.addEdge(i,j, dist,"Walk");
                 update.addEdge(j,i, dist,"Walk");
             }
@@ -271,12 +272,12 @@ list<string> STCP::doBFS(string origin, string dest) {
     return namePath;
 }
 
-list<string> STCP::doDijkstra(string origin, string dest) {
+list<string> STCP::doDijkstra(string origin, string dest, list<string>& lines) {
     int o = getNodeNumber(origin);
     int d = getNodeNumber(dest);
 
 
-    list<int> nodePath = graph.dijkstra_path(o,d);
+    list<int> nodePath = graph.dijkstra_path(o,d, lines);
 
     list<string> namePath;
 

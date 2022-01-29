@@ -37,7 +37,7 @@ public:
 
     int getNodeNumber(string code);
     list<string> doBFS(string origin, string dest);
-    list<string> doDijkstra(string origin, string dest);
+    list<string> doDijkstra(string origin, string dest, list<string>& lines);
 
     const map<string, int> &getStopsMap() const;
 };

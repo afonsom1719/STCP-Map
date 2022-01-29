@@ -35,14 +35,34 @@ double Graph::dijkstra_distance(int a, int b) {
 // ..............................
 // b) Caminho mais curto entre dois nós
 // TODO
-list<int> Graph::dijkstra_path(int a, int b) {
+list<int> Graph::dijkstra_path(int a, int b, list<string>& linhas) {
+
+
     dijkstra(a);
     list<int> path;
     if (nodes[b].dist == INF) return path;
     path.push_back(b);
     int v = b;
     while (v != a) {
+        int currentNode = v;
+        list<Edge> lines;
+        for (auto it = nodes[v].adj.begin(); it != nodes[v].adj.end(); it++) {
+            lines.push_back(*it);
+        }
         v = nodes[v].pred;
+
+        double shortestDistance = INT_MAX;
+        string line;
+        for(auto it = lines.begin(); it!=lines.end(); it++){
+            if(((it)->weight < shortestDistance) && (it->dest == currentNode)){
+                shortestDistance = (it)->weight;
+                line = (*it).line;
+            }
+        }
+        linhas.push_back(line);
+
+        nodes[v].adj;
+
         path.push_front(v);
     }
     return path;

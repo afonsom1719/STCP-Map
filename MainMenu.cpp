@@ -169,8 +169,9 @@ void MainMenu::menosParagens(pair<string,string> jef) {
 
 void MainMenu::menorDistancia(pair<string,string> jef) {
 
+    list <string> lines;
+    list <string> path = stcp.doDijkstra(jef.first, jef.second, lines);
 
-    list <string> path = stcp.doDijkstra(jef.first, jef.second);
 
     TextTable t( '-', '|', '+' );
     t.add(" ");
@@ -182,6 +183,11 @@ void MainMenu::menorDistancia(pair<string,string> jef) {
     }
 
     cout << t;
+
+    cout << "\n\n\n";
+    for (auto i:lines) {
+        cout << " " << i;
+    }
 
     string aaa;
     cin >> aaa;
