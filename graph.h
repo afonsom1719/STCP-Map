@@ -77,7 +77,7 @@ public:
     * @param b O nó de fim
     * @return Uma lista de inteiros representado os nós percorridos
     */
-    list<int> BFS_path(int a , int b);
+    list<int> BFS_path(int a , int b, list<string>& linhas);
 
     vector<Node> getNodes() {
         return nodes;

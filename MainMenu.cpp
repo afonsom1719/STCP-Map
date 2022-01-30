@@ -7,16 +7,18 @@
 void MainMenu::menu() {
 
     //initialize stcp
-    this->stcp = STCP();
+
     bool exiT = true;
+    bool andar = false;
     char c;
+    char b;
     pair<double,double> initialCoords;
     pair<string,string> paragens;
 
 
     system("CLS");
     std::cout << "[STCP]\n";
-    std::cout << "Esoclha uma opcao para determinar os locais de partida e chegada" << endl;
+    std::cout << "Escolha uma opcao para determinar os locais de partida e chegada" << endl;
     std::cout << "\n[1] Coordenadas - inserir as suas coordenadas e ver paragens por perto"
               << "\n[2] Codigo das paragens - inserir diretamente os codigos das paragens"
               << "\n[0] Sair\n"
@@ -29,11 +31,38 @@ void MainMenu::menu() {
         switch(c){
             //coordenadas
             case '1':
+                system("CLS");
+                std::cout << "[STCP]\n";
+                std::cout << "Pretende andar a pe durante a sua viagem ou manter o percurso exclusivo de autocarro?" << endl;
+                std::cout << "\n[1] Andar a pe"
+                          << "\n[2] Exclusivo de autocarro"
+                          << "\n>";
+                std::cin.clear();
+
+                std::cin >> b;
+                cin.clear();
+                system("CLS");
+                std::cout << "Loading\n";
+                if(b == '1'){ andar = true;}
+                this->stcp = STCP(andar);
                 initialCoords = enterBeginningCoordinates();
                 paragens = mostrarNearbyParagens(initialCoords);
                 exiT = false;
                 break;
             case '2':
+                system("CLS");
+                std::cout << "[STCP]\n";
+                std::cout << "Pretende andar a pe durante a sua viagem ou manter o percurso exclusivo de autocarro?" << endl;
+                std::cout << "\n[1] Andar a pe"
+                          << "\n[2] Exclusivo de autocarro"
+                          << "\n>";
+                std::cin.clear();
+                std::cin >> b;
+                cin.clear();
+                system("CLS");
+                std::cout << "Loading\n";
+                if(b == '1'){ andar = true;}
+                this->stcp = STCP(andar);
                 paragens = enterParagens();
                 exiT = false;
                 break;
@@ -53,7 +82,7 @@ void MainMenu::pathPreference(pair<string,string> paragens){
         char c;
         system("CLS");
         std::cout << "Selecione a aua preferencia de caminho\n";
-        std::cout << "\n[1] Caminho com menor distância"
+        std::cout << "\n[1] Caminho com menor distancia"
                   << "\n[2] Caminho com menos paragens"
                   << "\n[0] Voltar ao Menu\n"
                   << "\n>";
@@ -173,7 +202,7 @@ pair<string, string> MainMenu::mostrarNearbyParagens(pair<double,double> initial
 
     list<pair<string,string>> nearby = stcp.nearbyStops(initialCoords.first, initialCoords.second);
     TextTable t( '-', '|', '+' );
-    t.add("Código da paragem");
+    t.add("Codigo da paragem");
     t.add("Nome");
     t.endOfRow();
     t.add(" ");
@@ -221,16 +250,25 @@ pair<string, string> MainMenu::mostrarNearbyParagens(pair<double,double> initial
 
 void MainMenu::menosParagens(pair<string,string> jef) {
 
-
-    list <string> path = stcp.doBFS(jef.first, jef.second);
+    list <string> lines;
+    list <string> path = stcp.doBFS(jef.first, jef.second, lines);
+    auto lineIt = lines.begin();
 
     TextTable t( '-', '|', '+' );
+    t.add("Paragens");
+    t.add("Linhas/Caminhar");
+    t.endOfRow();
+    t.add(" ");
     t.add(" ");
     t.endOfRow();
 
     for (auto i:path) {
         t.add(i);
+        t.add(*lineIt);
         t.endOfRow();
+        if (lineIt != prev(lines.end())){
+            lineIt = next(lineIt);
+        }
     }
 
     cout << t;

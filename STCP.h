@@ -27,6 +27,8 @@ class STCP {
 
 public:
 
+    STCP(bool andar);
+
     STCP();
     /**
      * Mapeia o código de cada paragem para um inteiro, lendo do dataset
@@ -81,7 +83,7 @@ public:
      * @param dest O código da paragem de destino
      * @return Lista com os nomes das paragens correspondentes ao menor caminho em termos de número de nós percorridos.
      */
-    list<string> doBFS(string origin, string dest);
+    list<string> doBFS(string origin, string dest, list<string>& linhas);
     /**
      * @param origin O código da paragem de origem
      * @param dest O código da paragem de destino
@@ -96,6 +98,9 @@ public:
      */
     list<pair<string,string>> nearbyStops(double lat, double lon);
 
+    /**
+    * @return O map criado com as stops
+    */
     const map<string, int> &getStopsMap() const;
 };
 

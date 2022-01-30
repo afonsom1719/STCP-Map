@@ -126,15 +126,31 @@ void Graph::BFS(int a, int b) {
 
 }
 
-list<int> Graph::BFS_path(int a, int b) {
+list<int> Graph::BFS_path(int a, int b, list<string>& linhas) {
     BFS(a,b);
     list<int> path;
     int u = b;
 
     while (a!=u) {
+        int currentNode = u;
+
         path.insert(path.begin(), u);
         if(u==nodes[u].pred || !(nodes[u].pred>0 && nodes[u].pred<nodes.size())) return {};
         u = nodes[u].pred;
+        list<Edge> lines = {};
+        for (auto it = nodes[u].adj.begin(); it != nodes[u].adj.end(); it++) {
+            lines.push_back(*it);
+        }
+
+        double shortestDistance = INT_MAX;
+        string line;
+        for(auto it = lines.begin(); it!=lines.end(); it++){
+            if(((it)->weight < shortestDistance) && (it->dest == currentNode)){
+                shortestDistance = (it)->weight;
+                line = (*it).line;
+            }
+        }
+        linhas.push_back(line);
 
     }
     path.insert(path.begin(), a);

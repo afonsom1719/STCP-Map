@@ -31,14 +31,16 @@ static double haversine(double lat1, double lon1,
 }
 
 
-STCP::STCP() {
+STCP::STCP(bool andar) {
     this->stopsMap = mapStops();
     this->stopsInfo = readStopsInfo();
     this->linesInfo = readLinesInfo();
     this->linesStops = readLines(linesInfo);
     Graph g = toGraph(linesStops, stopsMap, stopsInfo, linesInfo);
     this->graph = g;
-    graph = addWalkEdges(graph, stopsInfo);
+    if(andar){
+        graph = addWalkEdges(graph, stopsInfo);
+    }
 
 }
 
@@ -252,11 +254,11 @@ int STCP::getNodeNumber(string code) {
     return stopsMap[code];
 }
 
-list<string> STCP::doBFS(string origin, string dest) {
+list<string> STCP::doBFS(string origin, string dest, list<string>& linhas) {
     int o = getNodeNumber(origin);
     int d = getNodeNumber(dest);
 
-    list<int> nodePath = graph.BFS_path(o,d);
+    list<int> nodePath = graph.BFS_path(o,d, linhas);
 
     list<string> namePath;
 
@@ -304,4 +306,8 @@ list<pair<string,string>> STCP::nearbyStops(double lat, double lon) {
 
     }
     return nearby;
+}
+
+STCP::STCP() {
+
 }
