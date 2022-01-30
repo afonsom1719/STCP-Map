@@ -15,10 +15,10 @@ void MainMenu::menu() {
 
 
     system("CLS");
-    std::cout << "[STCPotas]\n";
-    std::cout << "Queres inserir o codigo da paragem donde queres partir ou as coordenadas onde te encontras??" << endl;
-    std::cout << "\n[1] Coordenadas"
-              << "\n[2] Codigo das paragens"
+    std::cout << "[STCP]\n";
+    std::cout << "Esoclha uma opcao para determinar os locais de partida e chegada" << endl;
+    std::cout << "\n[1] Coordenadas - inserir as suas coordenadas e ver paragens por perto"
+              << "\n[2] Codigo das paragens - inserir diretamente os codigos das paragens"
               << "\n[0] Sair\n"
               << "\n>";
     std::cin.clear();
@@ -42,7 +42,7 @@ void MainMenu::menu() {
                 system("exit");
                 return;
             default:
-                std::cout << "Tenta outra vez\n";
+                std::cout << "Tente outra vez\n";
                 exiT = true;
         }
     }
@@ -52,10 +52,10 @@ void MainMenu::menu() {
 void MainMenu::pathPreference(pair<string,string> paragens){
         char c;
         system("CLS");
-        std::cout << "Seleciona a tua preferência de caminho\n";
+        std::cout << "Selecione a aua preferencia de caminho\n";
         std::cout << "\n[1] Caminho com menor distância"
                   << "\n[2] Caminho com menos paragens"
-                  << "\n[0] Volta Atrás\n"
+                  << "\n[0] Voltar ao Menu\n"
                   << "\n>";
 
         std::cin.clear();
@@ -79,7 +79,7 @@ void MainMenu::pathPreference(pair<string,string> paragens){
                     menu();
                     break;
                 default:
-                    std::cout << "Opção inválida\n";
+                    std::cout << "Opcao invalida\n";
                     crl = false;
 
             }
@@ -95,7 +95,7 @@ pair<string,string> MainMenu::enterParagens() {
 
     while(true){
             system("CLS");
-            std::cout << "Insere o código da paragem de partida:" << endl;
+            std::cout << "Codigo da paragem de partida:" << endl;
             std::cout << "\n"
                       << "\n>";
             cin.clear();
@@ -108,7 +108,7 @@ pair<string,string> MainMenu::enterParagens() {
                         paragens.first = (stop_node->first);
                     } else{
                         system("CLS");
-                        std::cout << "Insere o código da paragem de partida correto seu burro:" << endl;
+                        std::cout << "Codigo da paragem de partida:" << endl;
                         i = -1;
                         continue;
                     }
@@ -116,7 +116,7 @@ pair<string,string> MainMenu::enterParagens() {
                 }
                 if(i == 1){
                     system("CLS");
-                    std::cout << "Insere o código da paragem de chegada:" << endl;
+                    std::cout << "Codigo da paragem de chegada:" << endl;
                     std::cout << "\n"
                               << "\n>";
                     cin.clear();
@@ -142,10 +142,11 @@ pair<double, double> MainMenu::enterBeginningCoordinates() {
     pair<double, double> coords;
     double lat;
     double lon;
-    while (true){
+    bool exit = true;
+    while (exit){
         cin.clear();
         system("CLS");
-        std::cout << "Insere a latitude:" << endl;
+        std::cout << "Insira a sua latitude:" << endl;
         std::cout << "\n"
                   << "\n>";
         cin.clear();
@@ -153,10 +154,10 @@ pair<double, double> MainMenu::enterBeginningCoordinates() {
 
         cin.clear();
         system("CLS");
-        std::cout << "Insere a longitude:" << endl;
+        std::cout << "Insira a sua longitude:" << endl;
         std::cin >> lon;
 
-        break;
+        exit = false;
     }
     coords.first = lat; coords.second = lon;
     return coords;
@@ -169,15 +170,38 @@ pair<string, string> MainMenu::mostrarNearbyParagens(pair<double,double> initial
 
     //initialCoords : coordenadas recebidas pelo input
 
+
+    list<pair<string,string>> nearby = stcp.nearbyStops(initialCoords.first, initialCoords.second);
+    TextTable t( '-', '|', '+' );
+    t.add("Código da paragem");
+    t.add("Nome");
+    t.endOfRow();
+    t.add(" ");
+    t.add(" ");
+    t.endOfRow();
+
+    for (auto i:nearby) {
+        t.add(i.first);
+        t.add(i.second);
+        t.endOfRow();
+    }
+
+    system("CLS");
+    cout << t;
     /*
      * Funçao para mostrar as paragens + proximas
      * e escolher uma
      */
 
-    paragens.first = "FGT2"; //isto era so um dummy -> colocar igual ao codigo da paragem anteriormente obtida
+    std::cout << "\nInsira o codigo da paragem de partida:" << endl;
+    std::cout << "\n"
+              << "\n>";
+    std::cin >> paragens.first;
+
+    //paragens.first = "FGT2"; //isto era so um dummy -> colocar igual ao codigo da paragem anteriormente obtida
     while(exit){
         system("CLS");
-        std::cout << "Insere o código da paragem de chegada:" << endl;
+        std::cout << "Insira o codigo da paragem de chegada:" << endl;
         std::cout << "\n"
                   << "\n>";
         cin.clear();
@@ -214,7 +238,7 @@ void MainMenu::menosParagens(pair<string,string> jef) {
     string aaa;
     std::cout << "\n"
               << "\n>";
-    std::cout << "Prime qualquer tecla para voltar ao menu inicial:" << endl;
+    std::cout << "[0] Sair" << endl;
     cin >> aaa;
     menu();
     return;
@@ -245,10 +269,12 @@ void MainMenu::menorDistancia(pair<string,string> jef) {
         }
     }
 
+    cout << t;
+
     string aaa;
     std::cout << "\n"
               << "\n>";
-    std::cout << "Prime qualquer tecla para voltar ao menu inicial:" << endl;
+    std::cout << "[0] Sair" << endl;
     cin >> aaa;
     menu();
     return;

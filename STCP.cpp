@@ -239,9 +239,9 @@ Graph STCP::addWalkEdges(Graph g, vector<tuple<string,string,string,double,doubl
             tuple<string,string,string,double,double> stop1 = stopsInfo[i];
             tuple<string,string,string,double,double> stop2 = stopsInfo[j];
             double dist = haversine(get<3>(stop1), get<4>(stop1), get<3>(stop2), get<4>(stop2));
-            if (dist < 0.1) {
-                update.addEdge(i,j, dist,"Walk");
-                update.addEdge(j,i, dist,"Walk");
+            if (dist < 0.2) {
+                update.addEdge(i,j, dist,"Caminhar");
+                update.addEdge(j,i, dist,"Caminhar");
             }
         }
     }
@@ -290,4 +290,23 @@ list<string> STCP::doDijkstra(string origin, string dest, list<string>& lines) {
 
 const map<string, int> &STCP::getStopsMap() const {
     return stopsMap;
+}
+
+list<pair<string,string>> STCP::nearbyStops(double lat, double lon) {
+
+    list<pair<string,string>> nearby;
+
+
+    int s = graph.getNodes().size()-1;
+    for (int i = 0; i < s; i++) {
+
+            tuple<string,string,string,double,double> stop = stopsInfo[i];
+
+            double dist = haversine(lat, lon, get<3>(stop), get<4>(stop));
+            if (dist < 0.1) {
+                nearby.push_back(make_pair(get<0>(stop), get<1>(stop)));
+            }
+
+    }
+    return nearby;
 }
