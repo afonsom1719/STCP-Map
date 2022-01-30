@@ -59,7 +59,7 @@ list<int> Graph::dijkstra_path(int a, int b, list<string>& linhas) {
                 line = (*it).line;
             }
         }
-        linhas.push_back(line);
+        linhas.push_front(line);
 
         nodes[v].adj;
 
@@ -150,7 +150,7 @@ list<int> Graph::BFS_path(int a, int b, list<string>& linhas) {
                 line = (*it).line;
             }
         }
-        linhas.push_back(line);
+        linhas.push_front(line);
 
     }
     path.insert(path.begin(), a);
