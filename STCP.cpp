@@ -31,13 +31,19 @@ static double haversine(double lat1, double lon1,
 }
 
 
-STCP::STCP(bool andar) {
+STCP::STCP(bool andar, bool isNight) {
     this->stopsMap = mapStops();
     this->stopsInfo = readStopsInfo();
     this->linesInfo = readLinesInfo();
     this->linesStops = readLines(linesInfo);
-    Graph g = toGraph(linesStops, stopsMap, stopsInfo, linesInfo);
-    this->graph = g;
+    if(!isNight) {
+        Graph g = toGraphDay(linesStops, stopsMap, stopsInfo, linesInfo);
+        this->graph = g;
+    }else {
+        Graph g = toGraphNight(linesStops, stopsMap, stopsInfo, linesInfo);
+        this->graph = g;
+    }
+
     if(andar){
         graph = addWalkEdges(graph, stopsInfo);
     }
@@ -107,14 +113,15 @@ vector<tuple<string,string,string,double,double>> STCP::readStopsInfo() {
 }
 
 
-vector<pair<string, string>> STCP::readLinesInfo() {
+vector<pair<string, bool>> STCP::readLinesInfo() {
     //Read lines info files, print them on the console to test and add to a vector of pairs(code, name)
 
-    pair<string, string> line;
+    pair<string, bool> line;
 
-    vector<pair<string, string>> linesInfo;  //lines info
+    vector<pair<string, bool>> linesInfo;  //lines info
 
     string code, name;
+    bool isNight;
 
     int count = 1;  //initialize node counter to 1
 
@@ -123,8 +130,13 @@ vector<pair<string, string>> STCP::readLinesInfo() {
     lines.ignore(1000, '\n');
 
     while (getline(lines, code, ',')) {
-        getline(lines, name, '\n');
-        linesInfo.push_back({code,name});
+        getline(lines,name, '\n');
+        if(code.find('M') != std::string::npos){
+            isNight = true;
+        }else{
+            isNight = false;
+        }
+        linesInfo.push_back({code,isNight});
         //cout << code << "  ///  " << name << endl;
         count++;
     }
@@ -152,7 +164,7 @@ vector<string> STCP::readLine(string filename) {
     return stops;
 }
 
-vector<pair<vector<string>, vector<string>>> STCP::readLines(vector<pair<string, string>> linesInfo) {
+vector<pair<vector<string>, vector<string>>> STCP::readLines(vector<pair<string, bool>> linesInfo) {
     //Reads both directions or each line and puts it in a vector of pairs of vectors(normal direction, reverse direction)
 
     vector<pair<vector<string>, vector<string>>> linestops;
@@ -172,8 +184,8 @@ vector<pair<vector<string>, vector<string>>> STCP::readLines(vector<pair<string,
 }
 
 
-Graph STCP::toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map<string, int> stops, vector<tuple<string,string,string,double,double>> stopsInfo, vector<pair<string, string>> linesInfo) {
-    Graph g(2487, true);
+Graph STCP::toGraphDay(vector<pair<vector<string>, vector<string>>> linesStops, map<string, int> stops, vector<tuple<string,string,string,double,double>> stopsInfo, vector<pair<string, bool>> linesInfo) {
+    Graph gDay(2487, true);
     int counter = 0;
 
     for (auto it = linesStops.begin(); it != linesStops.end(); it++) {
@@ -192,12 +204,13 @@ Graph STCP::toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map
                 int dest = stops[*(et+1)];
                 tuple<string,string,string,double,double> info1 = stopsInfo[stops[*et]];
                 tuple<string,string,string,double,double> info2 = stopsInfo[stops[*(et+1)]];
-                double lat1 = get<3>(info1);
-                double lon1 = get<4>(info1);
                 double dist = haversine(get<3>(info1), get<4>(info1), get<3>(info2), get<4>(info2));
                 //cout << " " << origin << " " << dest << endl;
                 //add node to graph
-                g.addEdge(origin,dest, dist, linesInfo[counter].first);
+                if(!linesInfo[counter].second){
+                    gDay.addEdge(origin, dest, dist, linesInfo[counter].first);
+                }
+
 
             }
             else {
@@ -221,7 +234,9 @@ Graph STCP::toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map
                 double dist = haversine(get<3>(info1), get<4>(info1), get<3>(info2), get<4>(info2));
                 //cout << " " << origin << " " << dest << endl;
                 //add node to graph
-                g.addEdge(origin,dest, dist, linesInfo[counter].first);
+                if(!linesInfo[counter].second) {
+                    gDay.addEdge(origin, dest, dist, linesInfo[counter].first);
+                }
             }
             else {
                 break;
@@ -230,7 +245,7 @@ Graph STCP::toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map
         counter++;
     }
 
-    return g;
+    return gDay;
 }
 
 Graph STCP::addWalkEdges(Graph g, vector<tuple<string,string,string,double,double>> stopsInfo) {
@@ -310,4 +325,70 @@ list<pair<string,string>> STCP::nearbyStops(double lat, double lon) {
 
 STCP::STCP() {
 
+}
+
+Graph STCP::toGraphNight(vector<pair<vector<string>, vector<string>>> linesStops, map<string, int> stops, vector<tuple<string, string, string, double, double>> stopsInfo, vector<pair<string, bool>> linesInfo) {
+
+        Graph gNight(2487, true);
+        int counter = 0;
+
+        for (auto it = linesStops.begin(); it != linesStops.end(); it++) {
+
+            pair<vector<string>, vector<string>> currentLine = (*it);
+
+            vector<string> norm = currentLine.first;
+            vector<string> rev = currentLine.second;
+
+            //parse the normal direction
+            //cout << "Parsing normal direction" << endl << endl;
+
+            for ( auto et = norm.begin(); et != norm.end(); et++) {
+                int origin = stops[*et];
+                if((et+1)!=norm.end()) {
+                    int dest = stops[*(et+1)];
+                    tuple<string,string,string,double,double> info1 = stopsInfo[stops[*et]];
+                    tuple<string,string,string,double,double> info2 = stopsInfo[stops[*(et+1)]];
+                    double lat1 = get<3>(info1);
+                    double lon1 = get<4>(info1);
+                    double dist = haversine(get<3>(info1), get<4>(info1), get<3>(info2), get<4>(info2));
+                    //cout << " " << origin << " " << dest << endl;
+                    //add node to graph
+                    if(linesInfo[counter].second) {
+                        gNight.addEdge(origin, dest, dist, linesInfo[counter].first);
+                    }
+
+                }
+                else {
+                    break;
+                }
+            }
+
+            //cout << endl;
+
+            //parse the reverse direction
+            //cout << "Parsing reverse direction" << endl << endl;
+
+            for (auto jt = rev.begin(); jt != rev.end(); jt++) {
+                int origin = stops[*jt];
+                if((jt+1)!=rev.end()) {
+                    int dest = stops[*(jt+1)];
+                    tuple<string,string,string,double,double> info1 = stopsInfo[stops[*jt]];
+                    tuple<string,string,string,double,double> info2 = stopsInfo[stops[*(jt+1)]];
+                    double lat1 = get<3>(info1);
+                    double lon1 = get<4>(info1);
+                    double dist = haversine(get<3>(info1), get<4>(info1), get<3>(info2), get<4>(info2));
+                    //cout << " " << origin << " " << dest << endl;
+                    //add node to graph
+                    if(linesInfo[counter].second) {
+                        gNight.addEdge(origin, dest, dist, linesInfo[counter].first);
+                    }
+                }
+                else {
+                    break;
+                }
+            }
+            counter++;
+        }
+
+        return gNight;
 }

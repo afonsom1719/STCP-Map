@@ -10,8 +10,10 @@ void MainMenu::menu() {
 
     bool exiT = true;
     bool andar = false;
+    bool andarNoite = false;
     char c;
     char b;
+
     pair<double,double> initialCoords;
     pair<string,string> paragens;
 
@@ -24,6 +26,8 @@ void MainMenu::menu() {
               << "\n[0] Sair\n"
               << "\n>";
     std::cin.clear();
+
+
     //cin.ignore(INT_MAX, '\n');
     while(exiT){
         std::cin >> c;
@@ -42,9 +46,17 @@ void MainMenu::menu() {
                 std::cin >> b;
                 cin.clear();
                 system("CLS");
+                std::cout << "[STCP]\n";
+                std::cout << "Pretende andar de noite ou de dia?" << endl;
+                std::cout << "\n[0] Dia"
+                          << "\n[1] Noite"
+                          << "\n>";
+                std::cin.clear();
+                std::cin >> andarNoite;
+                system("CLS");
                 std::cout << "Loading\n";
                 if(b == '1'){ andar = true;}
-                this->stcp = STCP(andar);
+                this->stcp = STCP(andar, andarNoite);
                 initialCoords = enterBeginningCoordinates();
                 paragens = mostrarNearbyParagens(initialCoords);
                 exiT = false;
@@ -60,9 +72,17 @@ void MainMenu::menu() {
                 std::cin >> b;
                 cin.clear();
                 system("CLS");
+                std::cout << "[STCP]\n";
+                std::cout << "Pretende andar de noite ou de dia?" << endl;
+                std::cout << "\n[0] Dia"
+                          << "\n[1] Noite"
+                          << "\n>";
+                std::cin.clear();
+                std::cin >> andarNoite;
+                system("CLS");
                 std::cout << "Loading\n";
                 if(b == '1'){ andar = true;}
-                this->stcp = STCP(andar);
+                this->stcp = STCP(andar, andarNoite);
                 paragens = enterParagens();
                 exiT = false;
                 break;

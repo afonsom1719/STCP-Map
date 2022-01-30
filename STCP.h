@@ -21,13 +21,13 @@ class STCP {
 
     map<string, int> stopsMap;
     vector<tuple<string,string,string,double,double>> stopsInfo;
-    vector<pair<string, string>> linesInfo;
+    vector<pair<string, bool>> linesInfo;
     vector<pair<vector<string>, vector<string>>> linesStops;
     Graph graph = Graph(2487,true);
 
 public:
 
-    STCP(bool andar);
+    STCP(bool andar, bool isNight);
 
     STCP();
     /**
@@ -44,7 +44,7 @@ public:
      * Lê do dataset para um vetor de pares <string, string> a informação de cada linha, sendo a primeira string o código e a segunda o nome da linha.
      * @return O vetor com todas as informações sobre cada linha
      */
-    vector<pair<string, string>> readLinesInfo();
+    vector<pair<string, bool>> readLinesInfo();
     /**
      * Lê para um vetor de strings as paragens de uma linha
      * @param filename O nome do ficheiro a usar para ler do dataset
@@ -56,7 +56,7 @@ public:
      * @param linesInfo O vetor que contém as informações sobre todas as linhas.
      * @return Todas as paragens em cada linha e em cada sentido.
      */
-    vector<pair<vector<string>, vector<string>>> readLines(vector<pair<string, string>> linesInfo);
+    vector<pair<vector<string>, vector<string>>> readLines(vector<pair<string, bool>> linesInfo);
     /**
      * Constrói o grafo com base nas estruturas de dados que contêm as informações lidas do dataset
      * @param linesStops O vetor que contém a informação sobre as paragens em cada linha
@@ -65,7 +65,10 @@ public:
      * @param linesInfo O vetor de tuplos que contém as informações sobre as linhas
      * @return O grafo sobre o qual vão ser aplicados os algoritmos para a dterminação dos caminhos
      */
-    Graph toGraph(vector<pair<vector<string>, vector<string>>> linesStops, map<string, int> stops, vector<tuple<string,string,string,double,double>> stopsInfo, vector<pair<string, string>> linesInfo);
+    Graph toGraphDay(vector<pair<vector<string>, vector<string>>> linesStops, map<string, int> stops, vector<tuple<string,string,string,double,double>> stopsInfo, vector<pair<string, bool>> linesInfo);
+
+    Graph toGraphNight(vector<pair<vector<string>, vector<string>>> linesStops, map<string, int> stops, vector<tuple<string,string,string,double,double>> stopsInfo, vector<pair<string, bool>> linesInfo);
+
     /**
      * Adiciona arestas entre todos os nós (paragens) que estejam a menos de 200 metros entre si, representando que o utilizador se pode deslocar a peé entre elas.
      * @param g O grafo ao qual se vão adicionar as novas arestas
