@@ -248,11 +248,6 @@ Graph STCP::addWalkEdges(Graph g, vector<tuple<string,string,string,double,doubl
     return update;
 }
 
-const Graph &STCP::getGraph() const {
-    return graph;
-}
-
-
 int STCP::getNodeNumber(string code) {
     return stopsMap[code];
 }

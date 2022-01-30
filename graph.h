@@ -13,6 +13,10 @@
 
 using namespace std;
 
+/**
+     * Implementação de grafo fornecida pelos docentes, com algumas modificações.
+     */
+
 class Graph {
     struct Edge {
         int dest;   // Destination node
@@ -31,6 +35,10 @@ class Graph {
     bool hasDir;        // false: undirect; true: directed
     vector<Node> nodes; // The list of nodes being represented
 
+    /**
+     * Algoritmo de Dijkstra
+     * @param s O nó de início
+     */
     void dijkstra(int s);
 
 
@@ -41,12 +49,34 @@ public:
     // Add edge from source to destination with a certain weight
     void addEdge(int src, int dest, double weight = 1, string line = "");
 
-    // ----- Functions to implement in this class -----
+    /**
+     * Calcula a menor distância com base no algoritmo de Dijkstra
+     * @param a O nó de início
+     * @param b O nó de fim
+     * @return A menor distância de um nó ao outro
+     */
     double dijkstra_distance(int a, int b);
+    /**
+     * Identifica o menor caminho com base no algoritmo de Dijkstra
+     * @param a O nó de início
+     * @param b O nó de fim
+     * @return Uma lista de inteiros representado os nós percorridos
+     */
     list<int> dijkstra_path(int a, int b, list<string>& linhas);
 
-
+     /**
+     * Algoritmo de Breadth First Search entre dois nós
+     * @param a O nó de início
+     * @param b O nó de fim
+     * @return Uma lista de inteiros representado os nós percorridos
+     */
     void BFS(int a, int b);
+    /**
+    * Identifica o melhor caminho tendo em conta o número de nós percorridos, com base no algoritmo de BFS
+    * @param a O nó de início
+    * @param b O nó de fim
+    * @return Uma lista de inteiros representado os nós percorridos
+    */
     list<int> BFS_path(int a , int b);
 
     vector<Node> getNodes() {

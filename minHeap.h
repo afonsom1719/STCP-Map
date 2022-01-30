@@ -13,7 +13,9 @@
 
 using namespace std;
 
-// Binary min-heap to represent integer keys of type K with values (priorities) of type V
+/**
+     * Implementação de minHeap fornecida pelos docentes : Binary min-heap to represent integer keys of type K with values (priorities) of type V.
+     */
 template <class K, class V>
 class MinHeap {
     struct Node { // An element of the heap: a pair (key, value)
